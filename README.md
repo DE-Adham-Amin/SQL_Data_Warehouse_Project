@@ -1,94 +1,296 @@
+::: {align="center"}
 # SQL Data Warehouse Project
 
-A modern SQL Server data warehouse built with T-SQL, following the
-**Medallion Architecture** (Bronze, Silver, and Gold) to integrate,
-clean, transform, and prepare CRM and ERP data for analytics.
+### Building a Modern Data Warehouse with SQL Server
 
-## Project Overview
+[![SQL
+Server](https://img.shields.io/badge/Microsoft%20SQL%20Server-T--SQL-red?logo=microsoftsqlserver)](https://www.microsoft.com/en-us/sql-server)
+[![Architecture](https://img.shields.io/badge/Architecture-Medallion-blue)](#data-architecture)
+[![Status](https://img.shields.io/badge/Project-In%20Progress-orange)](#project-status)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-This project demonstrates the design and implementation of an end-to-end
-data warehouse using Microsoft SQL Server.
+**An end-to-end Data Engineering project that integrates CRM and ERP
+data into a structured SQL Server Data Warehouse.**
+:::
 
-Data is ingested from CSV files belonging to two source systems (CRM and
-ERP), processed through three architectural layers, and organized into a
-dimensional model for analytical use.
+------------------------------------------------------------------------
 
-## Architecture
+## 📌 Project Overview
 
-The project follows the Medallion Architecture:
+This project focuses on building a modern data warehouse using
+**Microsoft SQL Server** and **T-SQL**.
 
-### Bronze Layer --- Raw Data
+Data from two operational source systems --- **CRM** and **ERP** --- is
+ingested from CSV files, cleaned, standardized, and transformed into a
+business-ready dimensional model.
 
--   Loads source data from CRM and ERP CSV files into SQL Server.
--   Preserves raw data before applying transformations.
--   Uses stored procedures to manage the loading process.
+The solution follows the **Medallion Architecture**, separating the data
+processing workflow into three layers:
 
-### Silver Layer --- Cleaned and Standardized Data
+-   **Bronze:** Raw data ingestion.
+-   **Silver:** Data cleansing and standardization.
+-   **Gold:** Business-ready dimensional modeling.
 
--   Cleans and standardizes data from the Bronze layer.
--   Handles missing values and duplicates.
--   Applies data quality and consistency rules.
--   Loads transformed data into the Silver layer.
+The goal is to create a reliable and organized foundation for future
+analytical queries and reporting.
 
-### Gold Layer --- Business-Ready Data
+## 🏗️ Data Architecture
 
--   Organizes transformed data into a dimensional model.
--   Uses a Star Schema with dimension and fact views.
--   Prepares data for reporting and analytical queries.
+The warehouse is organized into three layers:
 
-## Data Sources
+  -----------------------------------------------------------------------
+  Layer                   Description             Main Responsibilities
+  ----------------------- ----------------------- -----------------------
+  **Bronze**              Raw data layer          Load source CSV files
+                                                  into SQL Server while
+                                                  preserving the original
+                                                  data.
 
-The project integrates data from two source systems:
+  **Silver**              Cleansed data layer     Clean, standardize,
+                                                  validate, and prepare
+                                                  data for integration.
 
-  Source System   Format      Number of Files
-  --------------- --------- -----------------
-  CRM             CSV                       3
-  ERP             CSV                       3
-  **Total**       **CSV**               **6**
+  **Gold**                Business layer          Organize transformed
+                                                  data into dimensions
+                                                  and facts using a Star
+                                                  Schema.
+  -----------------------------------------------------------------------
 
-## Data Quality
+### Data Flow
 
-SQL scripts are used to validate data across the warehouse layers,
-including checks for:
+``` text
+       Source Systems
+       ┌─────────────┐       ┌─────────────┐
+       │     CRM     │       │     ERP     │
+       │  CSV Files  │       │  CSV Files  │
+       └──────┬──────┘       └──────┬──────┘
+              │                     │
+              └──────────┬──────────┘
+                         ▼
+                ┌─────────────────┐
+                │  BRONZE LAYER   │
+                │    Raw Data     │
+                └────────┬────────┘
+                         ▼
+                ┌─────────────────┐
+                │  SILVER LAYER   │
+                │ Clean & Prepare │
+                └────────┬────────┘
+                         ▼
+                ┌─────────────────┐
+                │   GOLD LAYER    │
+                │  Star Schema    │
+                └────────┬────────┘
+                         ▼
+                ┌─────────────────┐
+                │ Analytics-Ready │
+                │      Data       │
+                └─────────────────┘
+```
+
+## 🎯 Project Objectives & Requirements
+
+### Data Engineering
+
+-   **Data Integration:** Combine data from CRM and ERP source systems.
+-   **Data Quality:** Identify and handle missing, duplicate, and
+    inconsistent records.
+-   **Data Transformation:** Clean and standardize data using T-SQL.
+-   **Data Modeling:** Build a dimensional model using fact and
+    dimension views.
+-   **Documentation:** Document the architecture, data flow, and data
+    model.
+
+### Data Sources
+
+The project uses six CSV files from two source systems:
+
+  Source System     Files Description
+  --------------- ------- -----------------------------------------------
+  CRM                   3 Customer, product, and sales-related data
+  ERP                   3 Customer, location, and product-category data
+  **Total**         **6** **Source CSV files**
+
+## ⚙️ Data Pipeline
+
+### 1. Bronze Layer --- Raw Ingestion
+
+-   Create the Bronze schema and source tables.
+-   Load raw CSV data into SQL Server.
+-   Keep source values unchanged during ingestion.
+-   Use stored procedures to organize the loading process.
+
+### 2. Silver Layer --- Cleaning & Transformation
+
+-   Create the Silver schema and tables.
+-   Remove duplicate records.
+-   Handle NULL and invalid values.
+-   Standardize text fields and categorical values.
+-   Validate and transform dates and other data attributes.
+-   Integrate related CRM and ERP data.
+
+### 3. Gold Layer --- Dimensional Modeling
+
+-   Create business-oriented views.
+-   Separate descriptive attributes into dimensions.
+-   Organize measurable business events into fact data.
+-   Apply a Star Schema design to support analytical workloads.
+
+## ⭐ Data Modeling
+
+The Gold layer follows a **Star Schema** approach.
+
+The model separates data into:
+
+-   **Dimension Views:** Provide descriptive context for business
+    entities, such as customers and products.
+-   **Fact Views:** Store measurable business events and metrics, such
+    as sales.
+
+This structure makes analytical queries easier to understand and
+maintain.
+
+## 🔍 Data Quality Checks
+
+Dedicated SQL scripts validate the quality of the transformed data.
+
+Checks cover areas such as:
 
 -   Duplicate records.
--   Missing or NULL values.
--   Data consistency and standardization.
--   Referential integrity.
--   Dimension and fact data validity.
+-   NULL and missing values.
+-   Invalid or inconsistent values.
+-   Data standardization.
+-   Dimension key uniqueness.
+-   Fact-to-dimension relationships.
 
-## Technology Stack
+Quality checks are maintained for both the Silver and Gold layers.
 
-  Technology             Usage
-  ---------------------- ------------------------------------------------
-  Microsoft SQL Server   Relational database and data warehouse
-  T-SQL                  Data ingestion, transformation, and validation
-  Docker                 Running SQL Server in a container
-  Visual Studio Code     SQL development
-  Git & GitHub           Version control
-  Draw.io                Architecture and data model diagrams
+## 📂 Repository Structure
 
-## Repository Contents
+``` text
+SQL_Data_Warehouse_Project/
+│
+├── datasets/                 # CRM and ERP source CSV files
+│
+├── docs/                     # Project documentation and diagrams
+│
+├── scripts/
+│   ├── bronze/               # Raw data ingestion scripts
+│   ├── silver/               # Data cleaning and transformation
+│   └── gold/                 # Dimensional modeling and views
+│
+├── tests/
+│   ├── quality_checks_silver.sql
+│   └── quality_checks_gold.sql
+│
+├── README.md
+└── LICENSE
+```
 
-The repository contains SQL scripts for the Bronze, Silver, and Gold
-layers, data quality checks, source datasets, and project documentation.
+## 🛠️ Tools & Technologies
 
-Refer to the repository folders for the exact scripts and diagrams.
+  -----------------------------------------------------------------------
+  Tool / Technology                   Purpose
+  ----------------------------------- -----------------------------------
+  **Microsoft SQL Server**            Database engine and data warehouse
 
-## Current Scope
+  **T-SQL**                           Data definition, ingestion,
+                                      transformation, and validation
 
-Implemented: - Bronze layer data loading. - Silver layer data cleaning
-and transformation. - Gold layer dimensional modeling and analytical
-views. - Silver and Gold data quality checks. - Data warehouse
-documentation and diagrams.
+  **Docker**                          Running SQL Server in a
+                                      containerized environment
 
-Business analysis queries and reporting can be added as a subsequent
-stage.
+  **Visual Studio Code**              SQL development and script
+                                      management
 
-## Author
+  **DBeaver**                         Database connection and query
+                                      execution
+
+  **Git & GitHub**                    Version control and project
+                                      collaboration
+
+  **Draw.io**                         Data architecture and modeling
+                                      diagrams
+  -----------------------------------------------------------------------
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+Before running the project, make sure you have:
+
+-   Docker installed.
+-   A running Microsoft SQL Server instance.
+-   Visual Studio Code or another SQL editor.
+-   Git installed.
+
+### Run the Project
+
+1.  Clone this repository:
+
+    ``` bash
+    git clone https://github.com/DE-Adham-Amin/SQL_Data_Warehouse_Project.git
+    ```
+
+2.  Open the project folder in your SQL editor.
+
+3.  Make sure your SQL Server container is running and connect to your
+    SQL Server instance.
+
+4.  Execute the SQL scripts in the following order:
+
+    ``` text
+    Bronze → Silver → Gold
+    ```
+
+5.  Run the corresponding data quality scripts from the `tests/` folder
+    to validate the loaded data.
+
+> **Note:** Make sure the source file paths in the Bronze loading
+> scripts match the location of the CSV files on your machine.
+
+## 📈 Project Status
+
+  Component                      Status
+  ------------------------------ -------------
+  Bronze Layer                   Completed
+  Silver Layer                   Completed
+  Gold Layer                     Completed
+  Silver Data Quality Checks     Completed
+  Gold Data Quality Checks       Completed
+  Data Warehouse Documentation   In Progress
+
+This repository focuses on the data warehouse implementation. Business
+analysis queries and dashboards are not included in the current scope.
+
+## 📚 Key Concepts Practiced
+
+-   Relational Database Design
+-   Data Warehousing Fundamentals
+-   ETL Processes
+-   Medallion Architecture
+-   Data Cleaning & Transformation
+-   Data Quality Validation
+-   Dimensional Modeling
+-   Star Schema
+-   SQL Server Stored Procedures
+-   Version Control with Git
+
+## 👨‍💻 Author
 
 **Adham Amin Hassan**
 
 Aspiring Data Engineer
 
 -   GitHub: [DE-Adham-Amin](https://github.com/DE-Adham-Amin)
+
+## 📄 License
+
+This project is licensed under the MIT License. See the
+[LICENSE](LICENSE) file for details.
+
+------------------------------------------------------------------------
+
+::: {align="center"}
+**Built as part of my journey toward becoming a Data Engineer.**
+:::
